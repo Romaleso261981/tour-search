@@ -1,75 +1,84 @@
-import { useMemo, useState } from 'react';
-import { SearchBar } from './components/SearchBar';
-import { TourCard } from './components/TourCard';
-import { tours as allTours } from './data/tours';
-import type { Tour } from './types';
+import { useEffect, useMemo, useState } from 'react';
+import { Dropdown } from './components/Dropdown';
+import { Input } from './components/Input';
+import { Button } from './components/Button';
+// використовуємо мок API з README
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { getCountries } from './api/api.js';
+
+type Country = { id: string; name: string; flag: string };
 
 export function App() {
-  const [query, setQuery] = useState('');
-  const [destination, setDestination] = useState<string | null>(null);
-  const [maxPrice, setMaxPrice] = useState<number | null>(null);
-  const [sort, setSort] = useState<'price-asc' | 'price-desc' | 'rating-desc'>('rating-desc');
+  const [countriesMap, setCountriesMap] = useState<Record<string, Country>>({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const destinations = useMemo(
-    () => Array.from(new Set(allTours.map((t) => t.destination))).sort(),
-    []
-  );
+  const [destinationCountryId, setDestinationCountryId] = useState<string | null>(null);
+  const [departureCity, setDepartureCity] = useState('');
 
-  const tours = useMemo(() => {
-    let list: Tour[] = allTours;
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter(
-        (t) =>
-          t.title.toLowerCase().includes(q) ||
-          t.description.toLowerCase().includes(q) ||
-          t.destination.toLowerCase().includes(q)
-      );
-    }
-    if (destination) {
-      list = list.filter((t) => t.destination === destination);
-    }
-    if (maxPrice != null) {
-      list = list.filter((t) => t.price <= maxPrice);
-    }
-    switch (sort) {
-      case 'price-asc':
-        list = [...list].sort((a, b) => a.price - b.price);
-        break;
-      case 'price-desc':
-        list = [...list].sort((a, b) => b.price - a.price);
-        break;
-      case 'rating-desc':
-      default:
-        list = [...list].sort((a, b) => b.rating - a.rating);
-    }
-    return list;
-  }, [query, destination, maxPrice, sort]);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await getCountries();
+        if (!res.ok) throw new Error('Failed to load countries');
+        const data = (await res.json()) as Record<string, Country>;
+        if (mounted) setCountriesMap(data);
+      } catch (e) {
+        if (mounted) setError('Не вдалося завантажити країни');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const countryOptions = useMemo(() => {
+    return Object.values(countriesMap).map((c) => ({ label: `${c.name}`, value: c.id }));
+  }, [countriesMap]);
+
+  function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    // Поки що лише консоль: форма — єдиний контент сторінки
+    // Надалі тут можна тригерити пошук цін
+    // eslint-disable-next-line no-console
+    console.log({ destinationCountryId, departureCity });
+  }
 
   return (
     <div className="container">
       <header className="header">
         <h1>Пошук турів</h1>
       </header>
-      <SearchBar
-        query={query}
-        onQueryChange={setQuery}
-        destinations={destinations}
-        destination={destination}
-        onDestinationChange={setDestination}
-        maxPrice={maxPrice}
-        onMaxPriceChange={setMaxPrice}
-        sort={sort}
-        onSortChange={setSort}
-      />
-      <main className="grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16, marginTop: 16 }}>
-        {tours.map((t) => (
-          <TourCard key={t.id} tour={t} />
-        ))}
-        {tours.length === 0 && (
-          <div className="empty" style={{ padding: 24, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, textAlign: 'center' }}>Нічого не знайдено. Змініть фільтри.</div>
-        )}
-      </main>
+
+      <form className="col" onSubmit={onSubmit} style={{ gap: 12, maxWidth: 720 }}>
+        <div className="col">
+          <label className="muted">Напрямок подорожі</label>
+          <Dropdown
+            placeholder={loading ? 'Завантаження…' : 'Оберіть країну'}
+            options={countryOptions}
+            value={destinationCountryId}
+            onChange={setDestinationCountryId}
+          />
+          {error && <small className="muted" style={{ color: '#b91c1c' }}>{error}</small>}
+        </div>
+
+        <div className="col">
+          <label className="muted">Місто відправлення</label>
+          <Input
+            placeholder="Напр., Київ"
+            value={departureCity}
+            onChange={(e) => setDepartureCity(e.target.value)}
+          />
+        </div>
+
+        <div className="row" style={{ justifyContent: 'flex-end' }}>
+          <Button type="submit" disabled={!destinationCountryId || !departureCity.trim()}>Шукати</Button>
+        </div>
+      </form>
     </div>
   );
 }
