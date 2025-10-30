@@ -1,9 +1,9 @@
 .wrapper { position: relative; }
 .label { font-size: 12px; color: #64748b; margin-bottom: 4px; display: inline-block; }
-.control { width: 100%; text-align: left; border: 1px solid #cbd5e1; background: #fff; border-radius: 10px; padding: 10px 34px 10px 12px; font-size: 14px; cursor: pointer; position: relative; }
+.control { width: 100%; text-align: left; border: 1px solid #cbd5e1; background: #fff; border-radius: 12px; padding: 14px 40px 14px 16px; font-size: 14px; cursor: pointer; position: relative; }
 .control:hover { border-color: #94a3b8; }
 .placeholder { color: #94a3b8; }
-.chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #64748b; }
+.chevron { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #64748b; }
 .menu { position: absolute; z-index: 20; margin-top: 6px; min-width: 100%; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 30px rgba(2, 6, 23, .08); overflow: hidden; }
 .item { padding: 10px 12px; cursor: pointer; }
 .item:hover { background: #f1f5f9; }
