@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import inputStyles from '../Input/input.module.css';
 import styles from './geo-search-input.module.css';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { getCountries, searchGeo } from '../../api/api.js';
 
 type Country = { id: string; name: string; flag: string };
@@ -24,6 +22,7 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<GeoEntity[]>([]);
+  const [countriesCache, setCountriesCache] = useState<Array<GeoEntity>>([]);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -45,6 +44,7 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
       const map = (await res.json()) as Record<string, Country>;
       const list: Array<GeoEntity> = Object.values(map).map((c) => ({ ...c, type: 'country' as const }));
       setItems(list);
+      setCountriesCache(list);
     } catch (e) {
       setError('Не вдалося завантажити країни');
     } finally {
@@ -63,7 +63,13 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
         const res = await searchGeo(trimmed);
         if (!res.ok) throw new Error('Failed search');
         const map = (await res.json()) as Record<string, GeoEntity>;
-        setItems(Object.values(map));
+        const q = trimmed.toLowerCase();
+        const filteredFromSearch = Object.values(map)
+          .filter((e) => e.type === 'country' && e.name.toLowerCase().startsWith(q));
+        const filteredFromCache = countriesCache
+          .filter((e) => e.name.toLowerCase().startsWith(q));
+        const result = filteredFromSearch.length > 0 ? filteredFromSearch : filteredFromCache;
+        setItems(result);
       } catch {
         setError('Помилка пошуку');
       } finally {
@@ -71,7 +77,7 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
       }
     }, 300);
     return () => clearTimeout(t);
-  }, [query, open]);
+  }, [query, open, countriesCache]);
 
   const hint = useMemo(() => {
     if (loading) return 'Завантаження…';
