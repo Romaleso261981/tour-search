@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import inputStyles from './input.module.css';
+import inputStyles from '../Input/input.module.css';
 import styles from './geo-search-input.module.css';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { getCountries, searchGeo } from '../api/api.js';
+import { getCountries, searchGeo } from '../../api/api.js';
 
 type Country = { id: string; name: string; flag: string };
 type City = { id: number; name: string };
@@ -27,7 +27,6 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Close on outside click
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
       const target = e.target as Node;
@@ -37,7 +36,6 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
     return () => document.removeEventListener('mousedown', onDocClick);
   }, []);
 
-  // Load countries on focus if no query
   async function loadCountries() {
     setLoading(true);
     setError(null);
@@ -54,11 +52,10 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
     }
   }
 
-  // Debounced search when typing
   useEffect(() => {
-    if (!open) return; // search only when menu is open
+    if (!open) return;
     const trimmed = query.trim();
-    if (trimmed.length === 0) return; // keep countries list when empty
+    if (trimmed.length === 0) return;
     setLoading(true);
     setError(null);
     const t = setTimeout(async () => {
