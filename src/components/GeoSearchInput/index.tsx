@@ -55,7 +55,10 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
   useEffect(() => {
     if (!open) return;
     const trimmed = query.trim();
-    if (trimmed.length === 0) return;
+    if (trimmed.length === 0) {
+      setItems(countriesCache);
+      return;
+    }
     setLoading(true);
     setError(null);
     const t = setTimeout(async () => {
