@@ -1,0 +1,2 @@
+export const DEFAULT_POLL_INTERVAL_MS = 800;
+
