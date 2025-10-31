@@ -3,6 +3,7 @@ import { getHotel, getPrice } from "../../api/api.js";
 import styles from "./offer-details.module.css";
 import { Button } from "../Button/Button";
 import type { Hotel, Price } from "../../types/types";
+import { formatDate, formatPrice } from "../../utils/format";
 
 interface Props {
   priceId: string;
@@ -55,19 +56,6 @@ export function OfferDetails({ priceId, hotelId, onBack }: Props) {
       isCancelled = true;
     };
   }, [priceId, hotelId]);
-
-  function formatDate(dateString: string) {
-    const [year, month, day] = dateString.split('-').map(Number);
-    if (!year || !month || !day) return dateString;
-    const dayPadded = String(day).padStart(2, '0');
-    const monthPadded = String(month).padStart(2, '0');
-    return `${dayPadded}.${monthPadded}.${year}`;
-  }
-
-  function formatPrice(amount: number, currency: string) {
-    const formattedAmount = new Intl.NumberFormat('uk-UA').format(amount);
-    return `${formattedAmount} ${currency.toUpperCase()}`;
-  }
 
   return (
     <div className={styles.wrapper}>
