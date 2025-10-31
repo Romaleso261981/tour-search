@@ -30,7 +30,9 @@
   @include mix.grid-center;
 }
 
-.text { @include mix.text-ellipsis; }
+.text { 
+  @include mix.text-ellipsis; 
+}
 
 .hint {
   padding: 12px 14px;

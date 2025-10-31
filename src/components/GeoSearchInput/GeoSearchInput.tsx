@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import inputStyles from '../Input/input.module.css';
+import inputStyles from '../Input/input.module.scss';
 import styles from './geo-search-input.module.scss';
 import { getCountries, searchGeo } from '../../api/api.js';
 
