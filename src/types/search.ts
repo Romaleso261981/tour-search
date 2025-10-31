@@ -9,6 +9,14 @@ export type PriceItem = {
   hotelID: string | number;
 };
 
+export type OfferItem = {
+  id: string;
+  hotelName: string;
+  hotelImg?: string;
+  startDate: string;
+  endDate: string;
+  amount: number;
+  currency: string;
+};
+
 export type PricesOk = { prices: Record<string, PriceItem> };
-
-

@@ -1,4 +1,4 @@
-import { startSearchPrices, getSearchPrices, stopSearchPrices } from '../api/api.js';
+import { startSearchPrices, getSearchPrices, stopSearchPrices, getHotels } from '../api/api.js';
 import type { StartSearchOk, PricesOk } from '../types/search';
 import { pollUntilReady } from './poll';
 import { DEFAULT_POLL_INTERVAL_MS } from './constants';
@@ -47,6 +47,14 @@ export async function pollPricesUntilReady(token: string, initialDelayMs = 0, in
     await new Promise<void>((r) => setTimeout(r, initialDelayMs));
   }
   return await pollUntilReady(() => getSearchPricesOnce(token), intervalMs);
+}
+
+export async function fetchHotelsMap(countryId: string): Promise<Record<string, { id: number; name: string; img?: string }>> {
+  const res = await getHotels(countryId);
+  if (!res.ok) {
+    throw new Error('Failed to load hotels');
+  }
+  return await res.json();
 }
 
 
