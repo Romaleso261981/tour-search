@@ -26,7 +26,7 @@ export function SearchForm() {
   }) {
     const { countryId } = payload;
     setHasSearched(true);
-    dispatch(searchOffersByCountry(countryId));
+    dispatch(searchOffersByCountry({ countryId }));
   }
 
   function handleSubmit(e: React.FormEvent) {
