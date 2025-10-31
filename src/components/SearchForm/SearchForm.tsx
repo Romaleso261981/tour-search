@@ -52,19 +52,21 @@ export function SearchForm({ offers, setOffers }: Props) {
         DEFAULT_POLL_INTERVAL_MS
       );
       const hotels = await fetchHotelsMap(countryId);
-      const mapped = Object.values(prices).map((p) => {
-        const hotel = Object.values(hotels).find(
-          (h) => String(h.id) === String(p.hotelID)
+      const mapped = Object.values(prices).map((priceItem) => {
+        const matchedHotel = Object.values(hotels).find(
+          (hotel) => String(hotel.id) === String(priceItem.hotelID)
         );
         return {
-          id: p.id,
-          hotelId: Number(p.hotelID),
-          hotelName: hotel?.name ?? "Готель",
-          hotelImg: hotel?.img,
-          startDate: p.startDate,
-          endDate: p.endDate,
-          amount: p.amount,
-          currency: p.currency,
+          id: priceItem.id,
+          hotelId: Number(priceItem.hotelID),
+          hotelName: matchedHotel?.name ?? "Готель",
+          hotelImg: matchedHotel?.img,
+          countryName: (matchedHotel as any)?.countryName,
+          cityName: (matchedHotel as any)?.cityName,
+          startDate: priceItem.startDate,
+          endDate: priceItem.endDate,
+          amount: priceItem.amount,
+          currency: priceItem.currency,
         };
       });
       setOffers(mapped);

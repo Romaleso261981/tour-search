@@ -14,6 +14,8 @@ export type OfferItem = {
   hotelId: number;
   hotelName: string;
   hotelImg?: string;
+  countryName?: string;
+  cityName?: string;
   startDate: string;
   endDate: string;
   amount: number;

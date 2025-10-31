@@ -16,12 +16,25 @@ function HotelIcon() {
   );
 }
 
+function formatDate(dateString: string) {
+  const [year, month, day] = dateString.split('-').map(Number);
+  if (!year || !month || !day) return dateString;
+  const dayPadded = String(day).padStart(2, '0');
+  const monthPadded = String(month).padStart(2, '0');
+  return `${dayPadded}.${monthPadded}.${year}`;
+}
+
+function formatPrice(amount: number, currency: string) {
+  const formattedAmount = new Intl.NumberFormat('uk-UA').format(amount);
+  return `${formattedAmount} ${currency.toUpperCase()}`;
+}
+
 export function ResultsList({ items }: ResultsListProps) {
   if (items.length === 0) return null;
   return (
     <div className={styles.list}>
       {items.map((offer) => (
-        <Link key={offer.id} className={styles.card} to={toOfferRoute(offer.id, offer.hotelId)}>
+        <div key={offer.id} className={styles.card}>
           <div className={styles.thumb}>
             {offer.hotelImg ? (
               <img src={offer.hotelImg} alt={offer.hotelName} />
@@ -33,12 +46,16 @@ export function ResultsList({ items }: ResultsListProps) {
           </div>
           <div className={styles.body}>
             <div className={styles.title}>{offer.hotelName}</div>
-            <div className={styles.sub}>{offer.startDate} — {offer.endDate}</div>
+            {(offer.countryName || offer.cityName) && (
+              <div className={styles.meta}>{offer.countryName}{offer.cityName ? `, ${offer.cityName}` : ''}</div>
+            )}
+            <div className={styles.sub}>{formatDate(offer.startDate)}</div>
           </div>
-          <div className={styles.price}>
-            <span>{offer.amount} {offer.currency.toUpperCase()}</span>
+          <div className={styles.price}>{formatPrice(offer.amount, offer.currency)}</div>
+          <div className={styles.actions}>
+            <Link className={styles.link} to={toOfferRoute(offer.id, offer.hotelId)}>Відкрити ціну</Link>
           </div>
-        </Link>
+        </div>
       ))}
     </div>
   );
