@@ -41,3 +41,10 @@ export type Price = {
   startDate: string;
   endDate: string;
 };
+
+export type Country = { id: string; name: string; flag: string };
+export type City = { id: number; name: string };
+export type GeoEntity =
+  | (Country & { type: "country" })
+  | (City & { type: "city" })
+  | (Pick<Hotel, "id" | "name"> & { type: "hotel" });

@@ -2,14 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import inputStyles from '../Input/input.module.scss';
 import styles from './geo-search-input.module.scss';
 import { getCountries, searchGeo } from '../../api/api.js';
+import { Country, GeoEntity } from '../../types/types';
+import { TypeIcon } from './TypeIcon';
 
-type Country = { id: string; name: string; flag: string };
-type City = { id: number; name: string };
-type Hotel = { id: number; name: string };
-type GeoEntity =
-  | (Country & { type: 'country' })
-  | (City & { type: 'city' })
-  | (Hotel & { type: 'hotel' });
+ 
 
 interface GeoSearchInputProps {
   placeholder?: string;
@@ -27,8 +23,8 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    function onDocClick(e: MouseEvent) {
-      const target = e.target as Node;
+    function onDocClick(mouseEvent: MouseEvent) {
+      const target = mouseEvent.target as Node;
       if (!wrapperRef.current?.contains(target)) setOpen(false);
     }
     document.addEventListener('mousedown', onDocClick);
@@ -39,13 +35,13 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
     setLoading(true);
     setError(null);
     try {
-      const res = await getCountries();
-      if (!res.ok) throw new Error('Failed to load');
-      const map = (await res.json()) as Record<string, Country>;
-      const list: Array<GeoEntity> = Object.values(map).map((c) => ({ ...c, type: 'country' as const }));
-      setItems(list);
-      setCountriesCache(list);
-    } catch (e) {
+      const response = await getCountries();
+      if (!response.ok) throw new Error('Failed to load');
+      const countriesById = (await response.json()) as Record<string, Country>;
+      const countriesList: Array<GeoEntity> = Object.values(countriesById).map((country) => ({ ...country, type: 'country' as const }));
+      setItems(countriesList);
+      setCountriesCache(countriesList);
+    } catch {
       setError('Не вдалося завантажити країни');
     } finally {
       setLoading(false);
@@ -61,15 +57,15 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
     }
     setLoading(true);
     setError(null);
-    const t = setTimeout(async () => {
+    const debounceTimeout = setTimeout(async () => {
       try {
-        const res = await searchGeo(trimmed);
-        if (!res.ok) throw new Error('Failed search');
-        const map = (await res.json()) as Record<string, GeoEntity>;
-        const q = trimmed.toLowerCase();
-        const filteredFromSearch = Object.values(map)
-          .filter((e) => e.name.toLowerCase().startsWith(q));
-        const filteredFromCache = countriesCache.filter((e) => e.name.toLowerCase().startsWith(q));
+        const response = await searchGeo(trimmed);
+        if (!response.ok) throw new Error('Failed search');
+        const searchResultsById = (await response.json()) as Record<string, GeoEntity>;
+        const normalizedQuery = trimmed.toLowerCase();
+        const filteredFromSearch = Object.values(searchResultsById)
+          .filter((entity) => entity.name.toLowerCase().startsWith(normalizedQuery));
+        const filteredFromCache = countriesCache.filter((entity) => entity.name.toLowerCase().startsWith(normalizedQuery));
         const result = filteredFromSearch.length > 0 ? filteredFromSearch : filteredFromCache;
         setItems(result);
       } catch {
@@ -78,29 +74,9 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
         setLoading(false);
       }
     }, 300);
-    return () => clearTimeout(t);
+    return () => clearTimeout(debounceTimeout);
   }, [query, open, countriesCache]);
-  function TypeIcon({ type }: { type: GeoEntity['type'] }) {
-    if (type === 'country') {
-      return (
-        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
-          <path fill="currentColor" d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20Zm-1 2.07A8 8 0 0 0 4.07 11H7c.55 0 1-.45 1-1V8c0-.55.45-1 1-1h2V4.07ZM4.07 13A8 8 0 0 0 11 19.93V16H9c-.55 0-1-.45-1-1v-2H4.07ZM13 19.93A8 8 0 0 0 19.93 13H17c-.55 0-1 .45-1 1v2h-3v3.93ZM19.93 11A8 8 0 0 0 13 4.07V7h2c.55 0 1 .45 1 1v2h3.93Z"/>
-        </svg>
-      );
-    }
-    if (type === 'city') {
-      return (
-        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
-          <path fill="currentColor" d="M3 21V8l6-3l6 3v13H3Zm8-2h2v-2h-2v2Zm-4 0h2v-2H7v2Zm4-4h2v-2h-2v2Zm-4 0h2v-2H7v2Zm12 6V10h2v11h-2Z"/>
-        </svg>
-      );
-    }
-    return (
-      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
-        <path fill="currentColor" d="M3 21V5a2 2 0 0 1 2-2h9a5 5 0 0 1 5 5v13h-2v-3H5v3H3Zm2-5h12V8a3 3 0 0 0-3-3H5Zm2-6h3V7H7Zm0 4h3v-2H7Zm5-4h3V7h-3Zm0 4h3v-2h-3Z"/>
-      </svg>
-    );
-  }
+  
 
   const hint = useMemo(() => {
     if (loading) return 'Завантаження…';
@@ -129,7 +105,7 @@ export function GeoSearchInput({ placeholder = 'Куди поїхати?', onSel
         className={inputStyles.input}
         placeholder={placeholder}
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(event) => setQuery(event.target.value)}
         onFocus={handleFocus}
         aria-autocomplete="list"
         aria-expanded={open}
