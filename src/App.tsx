@@ -1,23 +1,9 @@
-import { useState } from "react";
-import { SearchForm } from "./components/SearchForm/SearchForm";
-import { OfferItem } from "./types/types";
-import { ResultsList } from "./components/Results";
-import { OfferDetails } from "./components/OfferDetails";
-import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { AppRoute } from './routes';
+import { HomePage } from './pages/HomePage';
+import { OfferPage } from './pages/OfferPage';
 
 export function App() {
-  const [offers, setOffers] = useState<OfferItem[]>([]);
-
-  function OfferRoute() {
-    const params = useParams();
-    const navigate = useNavigate();
-    const priceId = params.priceId as string;
-    const hotelId = params.hotelId as string;
-    return (
-      <OfferDetails priceId={priceId} hotelId={hotelId} onBack={() => navigate('/')} />
-    );
-  }
 
   return (
     <div className="container">
@@ -25,13 +11,8 @@ export function App() {
         <h1>Пошук турів</h1>
       </header>
       <Routes>
-        <Route path={AppRoute.Home} element={
-          <>
-            <SearchForm offers={offers} setOffers={setOffers} />
-            {offers.length > 0 && <ResultsList items={offers} />}
-          </>
-        } />
-        <Route path={AppRoute.Offer} element={<OfferRoute />} />
+        <Route path={AppRoute.Home} element={<HomePage />} />
+        <Route path={AppRoute.Offer} element={<OfferPage />} />
       </Routes>
     </div>
   );
