@@ -13,10 +13,11 @@ import {
 } from "../../services/search";
 
 interface Props {
+  offers: OfferItem[];
   setOffers: (offers: OfferItem[]) => void;
 }
 
-export function SearchForm({ setOffers }: Props) {
+export function SearchForm({ offers, setOffers }: Props) {
   const [value, setValue] = useState<string>("");
   const [departureCity, setDepartureCity] = useState<string>("");
   const [countryId, setCountryId] = useState<string | null>(null);
@@ -26,6 +27,7 @@ export function SearchForm({ setOffers }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeToken, setActiveToken] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   async function handleSearchSubmit(payload: {
     countryId: string;
@@ -35,6 +37,7 @@ export function SearchForm({ setOffers }: Props) {
     const { countryId } = payload;
     setError(null);
     setOffers([]);
+    setHasSearched(true);
     setLoading(true);
     try {
       if (activeToken) await stopActiveSearch(activeToken);
@@ -126,6 +129,9 @@ export function SearchForm({ setOffers }: Props) {
         <div className="muted" role="alert" style={{ marginTop: 12 }}>
           {error}
         </div>
+      )}
+      {!loading && !error && hasSearched && offers.length === 0 && (
+        <div className={styles.empty}>За обраним напрямком пропозицій не знайдено. Спробуйте іншу країну.</div>
       )}
     </form>
   );

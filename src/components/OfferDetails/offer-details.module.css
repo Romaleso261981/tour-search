@@ -56,4 +56,22 @@
   color: #b91c1c;
 }
 
+@media (max-width: 520px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .image {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .top button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 

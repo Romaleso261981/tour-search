@@ -27,7 +27,7 @@ export function App() {
       <Routes>
         <Route path={AppRoute.Home} element={
           <>
-            <SearchForm setOffers={setOffers} />
+            <SearchForm offers={offers} setOffers={setOffers} />
             {offers.length > 0 && <ResultsList items={offers} />}
           </>
         } />

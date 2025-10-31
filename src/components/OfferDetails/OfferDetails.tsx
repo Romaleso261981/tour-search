@@ -33,7 +33,7 @@ export function OfferDetails({ priceId, hotelId, onBack }: Props) {
       setError(null);
       try {
         const [hotelResponse, priceResponse] = await Promise.all([
-          resolveResponse(getHotel(hotelId)),
+          resolveResponse(getHotel(Number(hotelId))),
           resolveResponse(getPrice(priceId)),
         ]);
         if (!hotelResponse.ok) throw new Error('Не вдалося завантажити готель');
