@@ -22,13 +22,8 @@
 .item:hover {
   background: #f1f5f9;
 }
-.badge {
-  font-size: 11px;
-  color: #475569;
-  background: #e2e8f0;
-  padding: 3px 6px;
-  border-radius: 999px;
-}
+.icon { color: #64748b; display: grid; place-items: center; }
+.text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .hint {
   padding: 12px 14px;
   color: #64748b;
