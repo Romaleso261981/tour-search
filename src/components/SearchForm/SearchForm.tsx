@@ -3,15 +3,8 @@ import { GeoSearchInput } from "../GeoSearchInput/GeoSearchInput";
 import { Input } from "../Input/Input";
 import { Button } from "../Button/Button";
 import styles from "./search-form.module.css"; 
-import { DEFAULT_POLL_INTERVAL_MS } from "../../services/constants";
-import {
-  stopActiveSearch,
-  startCountrySearch,
-  pollPricesUntilReady,
-  fetchHotelsMap,
-} from "../../services/search";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { setOffers, clearOffers } from "../../state/offersSlice";
+import { searchOffersByCountry } from "../../state/offersSlice";
 
 export function SearchForm() {
   const dispatch = useAppDispatch();
@@ -22,9 +15,8 @@ export function SearchForm() {
   const [geoKey, setGeoKey] = useState<number>(0);
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [activeToken, setActiveToken] = useState<string | null>(null);
+  const loading = useAppSelector((s) => s.offers.loading);
+  const error = useAppSelector((s) => s.offers.error);
   const [hasSearched, setHasSearched] = useState(false);
 
   async function handleSearchSubmit(payload: {
@@ -33,46 +25,8 @@ export function SearchForm() {
     departureCity: string;
   }) {
     const { countryId } = payload;
-    setError(null);
-    dispatch(clearOffers());
     setHasSearched(true);
-    setLoading(true);
-    try {
-      if (activeToken) await stopActiveSearch(activeToken);
-      const { token, waitUntil } = await startCountrySearch(countryId);
-      setActiveToken(token);
-
-      const firstAskAt = new Date(waitUntil).getTime();
-      const initialDelay = Math.max(0, firstAskAt - Date.now());
-      const { prices } = await pollPricesUntilReady(
-        token,
-        initialDelay,
-        DEFAULT_POLL_INTERVAL_MS
-      );
-      const hotels = await fetchHotelsMap(countryId);
-      const mapped = Object.values(prices).map((priceItem) => {
-        const matchedHotel = Object.values(hotels).find(
-          (hotel) => String(hotel.id) === String(priceItem.hotelID)
-        );
-        return {
-          id: priceItem.id,
-          hotelId: Number(priceItem.hotelID),
-          hotelName: matchedHotel?.name ?? "Готель",
-          hotelImg: matchedHotel?.img,
-          countryName: (matchedHotel as any)?.countryName,
-          cityName: (matchedHotel as any)?.cityName,
-          startDate: priceItem.startDate,
-          endDate: priceItem.endDate,
-          amount: priceItem.amount,
-          currency: priceItem.currency,
-        };
-      });
-      dispatch(setOffers(mapped));
-      setLoading(false);
-    } catch (e: any) {
-      setLoading(false);
-      setError(e?.message || "Не вдалося отримати результати");
-    }
+    dispatch(searchOffersByCountry(countryId));
   }
 
   function handleSubmit(e: React.FormEvent) {
