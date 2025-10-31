@@ -1,5 +1,7 @@
 import { OfferItem } from '../../types/search';
 import styles from './results-list.module.css';
+import { Link } from 'react-router-dom';
+import { toOfferRoute } from '../../routes';
 
 
 interface ResultsListProps {
@@ -19,7 +21,7 @@ export function ResultsList({ items }: ResultsListProps) {
   return (
     <div className={styles.list}>
       {items.map((offer) => (
-        <div key={offer.id} className={styles.card}>
+        <Link key={offer.id} className={styles.card} to={toOfferRoute(offer.id, offer.hotelId)}>
           <div className={styles.thumb}>
             {offer.hotelImg ? (
               <img src={offer.hotelImg} alt={offer.hotelName} />
@@ -31,12 +33,12 @@ export function ResultsList({ items }: ResultsListProps) {
           </div>
           <div className={styles.body}>
             <div className={styles.title}>{offer.hotelName}</div>
-            <div className={styles.sub}>${'{'}offer.startDate{'}'} — ${'{'}offer.endDate{'}'}</div>
+            <div className={styles.sub}>{offer.startDate} — {offer.endDate}</div>
           </div>
           <div className={styles.price}>
             <span>{offer.amount} {offer.currency.toUpperCase()}</span>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

@@ -11,6 +11,7 @@ export type PriceItem = {
 
 export type OfferItem = {
   id: string;
+  hotelId: number;
   hotelName: string;
   hotelImg?: string;
   startDate: string;

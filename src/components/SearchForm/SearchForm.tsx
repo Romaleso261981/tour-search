@@ -55,6 +55,7 @@ export function SearchForm({ setOffers }: Props) {
         );
         return {
           id: p.id,
+          hotelId: Number(p.hotelID),
           hotelName: hotel?.name ?? "Готель",
           hotelImg: hotel?.img,
           startDate: p.startDate,
