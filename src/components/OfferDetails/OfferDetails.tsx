@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getHotel, getPrice } from "../../api/api.js";
-import styles from "./offer-details.module.css";
+import styles from "./offer-details.module.scss";
 import { Button } from "../Button/Button";
 import type { Hotel, Price } from "../../types/types";
 import { formatDate, formatPrice } from "../../utils/format";

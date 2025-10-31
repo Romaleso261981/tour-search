@@ -1,3 +1,5 @@
+@use '../../styles/mixins' as mix;
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -34,42 +36,30 @@
   flex-direction: column;
   gap: 4px;
 }
-
 .title {
   margin: 0;
   font-size: 20px;
 }
-
 .dates {
   color: #6b7280;
 }
-
 .price {
   font-weight: 700;
 }
-
 .description {
   margin: 0;
 }
-
 .meta {
   color: #6b7280;
 }
-
 .services {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
-
 .tag {
-  font-size: 12px;
-  background: #f1f5f9;
-  border: 1px solid #e5e7eb;
-  border-radius: 999px;
-  padding: 6px 10px;
+  @include mix.tag;
 }
-
 .error {
   color: #b91c1c;
 }

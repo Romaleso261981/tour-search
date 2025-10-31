@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import inputStyles from '../Input/input.module.css';
-import styles from './geo-search-input.module.css';
+import styles from './geo-search-input.module.scss';
 import { getCountries, searchGeo } from '../../api/api.js';
 
 type Country = { id: string; name: string; flag: string };

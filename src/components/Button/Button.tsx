@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, PropsWithChildren } from 'react';
-import styles from './button.module.css';
+import styles from './button.module.scss';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 

@@ -1,5 +1,5 @@
 import { OfferItem } from '../../types/types';
-import styles from './results-list.module.css';
+import styles from './results-list.module.scss';
 import { Link } from 'react-router-dom';
 import { toOfferRoute } from '../../routes';
 import { formatDate, formatPrice } from '../../utils/format';
