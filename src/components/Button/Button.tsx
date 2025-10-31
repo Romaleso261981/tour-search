@@ -1,7 +1,6 @@
 import type { ButtonHTMLAttributes, PropsWithChildren } from 'react';
+import type { ButtonVariant } from '../../types/types';
 import styles from './button.module.scss';
-
-type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;

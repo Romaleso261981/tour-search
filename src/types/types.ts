@@ -48,3 +48,5 @@ export type GeoEntity =
   | (Country & { type: "country" })
   | (City & { type: "city" })
   | (Pick<Hotel, "id" | "name"> & { type: "hotel" });
+
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
