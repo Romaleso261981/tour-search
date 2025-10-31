@@ -28,6 +28,8 @@ export type Hotel = {
   id: number;
   name: string;
   img?: string;
+  countryName?: string;
+  cityName?: string;
   description?: string;
   services?: Record<string, string>;
 };

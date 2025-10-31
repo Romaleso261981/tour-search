@@ -56,6 +56,19 @@ export function OfferDetails({ priceId, hotelId, onBack }: Props) {
     };
   }, [priceId, hotelId]);
 
+  function formatDate(dateString: string) {
+    const [year, month, day] = dateString.split('-').map(Number);
+    if (!year || !month || !day) return dateString;
+    const dayPadded = String(day).padStart(2, '0');
+    const monthPadded = String(month).padStart(2, '0');
+    return `${dayPadded}.${monthPadded}.${year}`;
+  }
+
+  function formatPrice(amount: number, currency: string) {
+    const formattedAmount = new Intl.NumberFormat('uk-UA').format(amount);
+    return `${formattedAmount} ${currency.toUpperCase()}`;
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.top}>
@@ -77,16 +90,18 @@ export function OfferDetails({ priceId, hotelId, onBack }: Props) {
             )}
             <div className={styles.info}>
               <h2 className={styles.title}>{hotel.name}</h2>
-              <div className={styles.dates}>
-                {price.startDate} — {price.endDate}
-              </div>
-              <div className={styles.price}>
-                {price.amount} {price.currency.toUpperCase()}
-              </div>
+              <div className={styles.meta}>{hotel.countryName}{hotel.cityName ? `, ${hotel.cityName}` : ''}</div>
+              <div className={styles.dates}>{formatDate(price.startDate)} — {formatDate(price.endDate)}</div>
+              <div className={styles.price}>{formatPrice(price.amount, price.currency)}</div>
             </div>
           </div>
-          {hotel.description && (
-            <p className={styles.description}>{hotel.description}</p>
+          {hotel.description && <p className={styles.description}>{hotel.description}</p>}
+          {hotel.services && (
+            <div className={styles.services}>
+              {Object.entries(hotel.services).map(([key, value]) => (
+                <span key={key} className={styles.tag}>{key.replace(/_/g, ' ')}: {value}</span>
+              ))}
+            </div>
           )}
         </div>
       )}

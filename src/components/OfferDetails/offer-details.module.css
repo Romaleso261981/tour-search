@@ -52,6 +52,24 @@
   margin: 0;
 }
 
+.meta {
+  color: #6b7280;
+}
+
+.services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-size: 12px;
+  background: #f1f5f9;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
 .error {
   color: #b91c1c;
 }
