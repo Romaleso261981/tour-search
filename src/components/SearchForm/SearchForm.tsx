@@ -2,8 +2,7 @@ import { useRef, useState } from "react";
 import { GeoSearchInput } from "../GeoSearchInput/GeoSearchInput";
 import { Input } from "../Input/Input";
 import { Button } from "../Button/Button";
-import styles from "./search-form.module.css";
-import { OfferItem } from "../../types/types";
+import styles from "./search-form.module.css"; 
 import { DEFAULT_POLL_INTERVAL_MS } from "../../services/constants";
 import {
   stopActiveSearch,
@@ -11,13 +10,12 @@ import {
   pollPricesUntilReady,
   fetchHotelsMap,
 } from "../../services/search";
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import { setOffers, clearOffers } from "../../state/offersSlice";
 
-interface Props {
-  offers: OfferItem[];
-  setOffers: (offers: OfferItem[]) => void;
-}
-
-export function SearchForm({ offers, setOffers }: Props) {
+export function SearchForm() {
+  const dispatch = useAppDispatch();
+  const offers = useAppSelector((s) => s.offers.items);
   const [value, setValue] = useState<string>("");
   const [departureCity, setDepartureCity] = useState<string>("");
   const [countryId, setCountryId] = useState<string | null>(null);
@@ -36,7 +34,7 @@ export function SearchForm({ offers, setOffers }: Props) {
   }) {
     const { countryId } = payload;
     setError(null);
-    setOffers([]);
+    dispatch(clearOffers());
     setHasSearched(true);
     setLoading(true);
     try {
@@ -69,7 +67,7 @@ export function SearchForm({ offers, setOffers }: Props) {
           currency: priceItem.currency,
         };
       });
-      setOffers(mapped);
+      dispatch(setOffers(mapped));
       setLoading(false);
     } catch (e: any) {
       setLoading(false);

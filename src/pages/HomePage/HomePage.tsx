@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import { SearchForm } from '../../components/SearchForm/SearchForm';
 import { ResultsList } from '../../components/Results';
-import type { OfferItem } from '../../types/types';
+import { useAppSelector } from '../../state/hooks';
 
 export function HomePage() {
-  const [offers, setOffers] = useState<OfferItem[]>([]);
+  const offers = useAppSelector((s) => s.offers.items);
   return (
     <>
-      <SearchForm offers={offers} setOffers={setOffers} />
+      <SearchForm />
       {offers.length > 0 && <ResultsList items={offers} />}
     </>
   );
