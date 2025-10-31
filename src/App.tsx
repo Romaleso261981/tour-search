@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SearchForm } from "./components/SearchForm/SearchForm";
-import { OfferItem } from "./types/search";
+import { OfferItem } from "./types/types";
 import { ResultsList } from "./components/Results";
 import { OfferDetails } from "./components/OfferDetails";
 import { Routes, Route, useParams, useNavigate } from 'react-router-dom';

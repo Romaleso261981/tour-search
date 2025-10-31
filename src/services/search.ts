@@ -1,5 +1,5 @@
 import { startSearchPrices, getSearchPrices, stopSearchPrices, getHotels } from '../api/api.js';
-import type { StartSearchOk, PricesOk } from '../types/search';
+import type { StartSearchOk, PricesOk } from '../types/types.js';
 import { pollUntilReady } from './poll';
 import { DEFAULT_POLL_INTERVAL_MS } from './constants';
 

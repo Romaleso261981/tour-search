@@ -3,7 +3,7 @@ import { GeoSearchInput } from "../GeoSearchInput/GeoSearchInput";
 import { Input } from "../Input/Input";
 import { Button } from "../Button/Button";
 import styles from "./search-form.module.css";
-import { OfferItem } from "../../types/search";
+import { OfferItem } from "../../types/types";
 import { DEFAULT_POLL_INTERVAL_MS } from "../../services/constants";
 import {
   stopActiveSearch,

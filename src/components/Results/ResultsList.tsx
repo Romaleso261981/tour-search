@@ -1,4 +1,4 @@
-import { OfferItem } from '../../types/search';
+import { OfferItem } from '../../types/types';
 import styles from './results-list.module.css';
 import { Link } from 'react-router-dom';
 import { toOfferRoute } from '../../routes';

@@ -23,3 +23,19 @@ export type OfferItem = {
 };
 
 export type PricesOk = { prices: Record<string, PriceItem> };
+
+export type Hotel = {
+  id: number;
+  name: string;
+  img?: string;
+  description?: string;
+  services?: Record<string, string>;
+};
+
+export type Price = {
+  id: string;
+  amount: number;
+  currency: string;
+  startDate: string;
+  endDate: string;
+};
